@@ -1,0 +1,168 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+        <meta name="generator" content="Jekyll v4.1.1">
+        <title>QR Paper</title>
+        <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
+        <!-- Bootstrap core CSS -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+        </style>
+        <link href="css/styles.css" rel="stylesheet">
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="#">QR Paper</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <div class="nav-link" id="show_createWindow_button">Create</div>
+                    </li>
+                    <li class="nav-item">
+                        <div class="nav-link" id="show_scanWindow_button">Scan</div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main role="main" class="container">
+            <div id="create_window" class="window">
+				<div>
+					<form>
+					<div>
+						<label>Main</label>
+						<div class="form-group">
+							<input id="text-id" type="text" class="form-control" placeholder="ID">
+						</div>
+						<div class="form-group">
+							<input id="number-maxLength" type="number" class="form-control" placeholder="Max length">
+						</div>
+						<div class="form-group">
+							<input id="text-password" type="text" class="form-control" placeholder="Password">
+							<small class="form-text text-muted">We'll never encrypt data if the password is empty.If you use any password Check "Base64 Encoding" rather data will corrupt.</small>
+						</div>
+					</div>
+
+					<div>
+						<p>
+							<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-config">Config</button>
+						</p>
+						<div class="collapse" id="collapse-config">
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<label class="input-group-text" for="select-correctLevel">Correct Level</label>
+								</div>
+								<select class="custom-select" id="select-correctLevel">
+									<option value="0">M</option>
+									<option value="1">L</option>
+									<option value="2">H</option>
+									<option value="3">Q</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div>
+						<p>
+							<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-style">Style</button>
+						</p>
+						<div class="collapse" id="collapse-style">
+							<div class="input-group">
+								<span class="input-group-text">Size</span>
+								<input id="qr_width" type="number" class="form-control" placeholder="Width">
+								<input id="qr_height" type="number" class="form-control" placeholder="height">
+							</div>
+							<div class="input-group">
+								<span class="input-group-text">Background</span>
+								<input id="qr_bg" type="color" class="form-control form-control-color" value="#ffffff">
+							</div>
+							<div class="input-group">
+								<span class="input-group-text">Foreground</span>
+								<input id="qr_fg" type="color" class="form-control form-control-color" value="#000000">
+							</div>
+							<div class="input-group">
+								<span class="input-group-text">Quiet Zone</span>
+								<input id="qr_qtz" type="number" class="form-control" placeholder="Size">
+								<input id="qr_qtz_col" type="color" class="form-control form-control-color" value="#00CED1">
+							</div>
+							<div class="form-check">
+								<input type="checkbox" checked class="form-check-input" id="qr_enable_logo">
+								<label class="form-check-label" for="qr_enable_logo">Enable Logo</label>
+							</div>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="qr_enable_logo_t">
+								<label class="form-check-label" for="qr_enable_logo_t">Transparent logo Background</label>
+							</div>
+						</div>
+					</div>
+					
+					
+					<div>
+					<label>Data</label>
+						<form>
+							<div class="form-group">
+								<input id="upload-file" type="file" class="form-control-file">
+								<div class="input-group">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="qr_fileType">Type</label>
+									</div>
+									<select class="custom-select" id="qr_fileType">
+										<option value="0">Text</option>
+										<option value="1">File</option>
+									</select>
+								</div>
+								<div class="input-group">
+									<span class="input-group-text">Name</span>
+									<input id="qr_fileName" type="text" class="form-control" spellcheck="false">
+								</div>
+								<textarea spellcheck="false" id="text-data" class="form-control" rows="5"></textarea>
+								<small id="create-info" class="form-text text-muted">?</small>
+							</div>
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input" id="enable-b64">
+								<label class="form-check-label" for="enable-b64">Base64 Encoding</label>
+							</div>
+						</form>
+					</div>
+						<button id="qr-generate" type="submit" class="btn btn-primary">Generate</button>
+						<button id="qr-download" type="submit" class="btn btn-primary">Downlaod</button>
+					</form>
+				</div>
+				<div id="qr-body"></div>
+            </div>
+        </main>
+        <!-- /.container -->
+        <script src="lib/randomString.js"></script>
+        <script src="lib/FileSaver.min.js"></script>
+        <script src="lib/jszip.min.js"></script>
+        <script src="lib/jquery-3.5.1.slim.min.js"></script>
+        <script src="lib/bootstrap.bundle.min.js"></script>
+		<script src="lib/base64.js"></script>
+		<script src="lib/char-enc-dec.js"></script>
+		<!-- <script src="lib/qrcode.js"></script> -->
+		<script src="lib/easy.qrcode.min.js"></script>
+		<script src="js/jsonData.js"></script>
+		<script src="js/createWindow.js"></script>
+		<script src="js/app.js"></script>
+		<script src="main.js"></script>
+	</body>
+</html>

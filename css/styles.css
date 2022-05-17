@@ -1,0 +1,15 @@
+body {
+  padding-top: 5rem;
+}
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+#qr-body{
+	/* border : 1px solid #000; */
+	padding: 5px;
+}
+
+.window{
+  /* transition: display 2s linear; */
+}
