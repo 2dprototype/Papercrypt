@@ -1,0 +1,161 @@
+body {
+	margin:0;
+	padding:0;
+	font-family: "Exo 2", sans-serif;
+}
+
+.new {
+	display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.new p {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin: 0px 10px;
+    align-items: center;
+}
+
+.new span {
+    margin: 10px;
+}
+
+.new .text {
+    margin: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 1.25em;
+}
+
+.new p input, select {
+	/* width: 100%; */
+}
+
+canvas {
+    box-shadow: 1px 2px 4px 1px rgb(32 33 36 / 28%);
+    width: 80%;
+	margin-bottom:20px;
+}
+
+@media (min-width: 401px) {
+	canvas {
+		width: 400px;
+	}
+}
+
+input, select, textarea, button {
+	outline: none;
+    border: none;
+    background: #efefef;
+    padding: 10px;
+    margin: 5px 10px;
+}
+
+textarea {
+	resize: vertical;
+	height: 300px;
+	margin: 10px 20px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+#icon-picker {
+    margin: 15px;
+}
+
+#icon-picker .xicon {
+    padding: 5px;
+    /* border: 1px solid #2196F3; */
+    border-radius: 10px;
+}
+
+#decrypter .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    align-content: center;
+    align-items: center;
+}
+
+#decrypter .container p {
+    display: flex;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+    width: 80%;
+    justify-content: center;
+	margin: 0;
+}
+
+#decrypter .container input {
+    width:100%;
+}
+
+#home {
+	padding: 10px;
+}
+
+a {
+    color: #00a1f5;
+    text-decoration: none;
+}
+
+/* #decrypter .output { */
+	/* width: 100%; */
+/* } */
+
+#decrypter pre {
+    margin: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+	display: flex;
+	overflow-wrap: anywhere;
+}
+
+.patternlock {
+	width:100%;
+}
+
+@media (min-width: 401px) {
+	.patternlock {
+		width: 400px;
+	}
+}
+
+input[type=button], button {
+    cursor: pointer;
+    transition: .2s;
+    background: #00a1f5;
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+input[type=button]:hover, button:hover{
+	background:#009beb;
+}
+
+input[type=button]:active, button:active{
+	background:#0088cf;
+}
+
+#map {
+  width: 400px;
+  height: 400px;
+}

@@ -1,168 +1,179 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-        <meta name="generator" content="Jekyll v4.1.1">
-        <title>QR Paper</title>
-        <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/starter-template/">
-        <!-- Bootstrap core CSS -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <style>
-            .bd-placeholder-img {
-                font-size: 1.125rem;
-                text-anchor: middle;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-
-            @media (min-width: 768px) {
-                .bd-placeholder-img-lg {
-                    font-size: 3.5rem;
-                }
-            }
-        </style>
-        <link href="css/styles.css" rel="stylesheet">
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="#">QR Paper</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <div class="nav-link" id="show_createWindow_button">Create</div>
-                    </li>
-                    <li class="nav-item">
-                        <div class="nav-link" id="show_scanWindow_button">Scan</div>
-                    </li>
-                </ul>
+	<head>
+		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' >
+		<title>Papercrypt</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/css/main.css"/>
+		<link rel="stylesheet" href="/lib/highlight/atom-one-dark.css"/>
+		<link rel="stylesheet" href="/lib/patternlock/patternlock.css"/>
+		<link rel="icon" type="image/x-icon" href="/res/favicon.ico">
+		<script src="/lib/svg-inject.min.js"></script>
+	</head>
+	<body>	
+		<div style="display:none;" id="home">
+			<h3>Papercrypt!</h3>
+			<span>Papercrypt is a tool for generating encrypted QR codes.</span>
+			<br />
+			<br />
+			<b>Quick Start:</b>
+			<br />
+			<span>First, create your encrypted barcode <a href="/new">here</a> using your own configuration. Then scan it using any QR code scanner. You will receive a URL. Open the URL and enter your password. Your secured data will appear seemingly out of nowhere.</span>
+			<br />
+			<br />
+			<span>You can also <a href="/scanner">scan QR code chunks</a> to reconstruct your data.</span>
+			<br />
+			<br />
+			<span><i>Developed by <a href="https://github.com/2dprototype" target="_blank">2DPrototype</a>!</i></span>
+		</div>
+		<div id="scanner" style="display:none;">
+            <div class="container">
+                <h3>QR Code Scanner</h3>
+                <p>Scan your QR code chunks to reconstruct the original data</p>
+                <div id="video-container" style="width: 100%; max-width: 400px; margin: 20px auto;">
+                    <video id="scanner-video" style="width: 100%; border: 2px solid #ccc;" muted playsinline></video>
+                </div>
+                <p>
+                    <button id="start-scanner">Start Scanner</button>
+                    <button id="stop-scanner" style="display:none;">Stop Scanner</button>
+                </p>
+                <div id="scan-progress" style="margin: 20px;">
+                    <h4>Scan Progress</h4>
+                    <div id="chunks-list"></div>
+                </div>
+                <div id="reconstructed-data" style="display:none; margin: 20px;">
+                    <h4>Reconstructed Data</h4>
+                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; max-height: 300px; overflow: auto;"></pre>
+                    <p>
+                        <button id="copy-data">Copy Data</button>
+                        <button id="download-data">Download</button>
+                    </p>
+                </div>
+                <div id="manual-input" style="margin: 20px;">
+                    <h4>Manual Input</h4>
+                    <textarea placeholder="Paste QR code content manually..." style="width: 100%; height: 100px; margin: 10px 0;"></textarea>
+                    <button id="add-manual">Add Chunk</button>
+                </div>
             </div>
-        </nav>
-        <main role="main" class="container">
-            <div id="create_window" class="window">
-				<div>
-					<form>
-					<div>
-						<label>Main</label>
-						<div class="form-group">
-							<input id="text-id" type="text" class="form-control" placeholder="ID">
-						</div>
-						<div class="form-group">
-							<input id="number-maxLength" type="number" class="form-control" placeholder="Max length">
-						</div>
-						<div class="form-group">
-							<input id="text-password" type="text" class="form-control" placeholder="Password">
-							<small class="form-text text-muted">We'll never encrypt data if the password is empty.If you use any password Check "Base64 Encoding" rather data will corrupt.</small>
-						</div>
-					</div>
-
-					<div>
-						<p>
-							<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-config">Config</button>
-						</p>
-						<div class="collapse" id="collapse-config">
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<label class="input-group-text" for="select-correctLevel">Correct Level</label>
-								</div>
-								<select class="custom-select" id="select-correctLevel">
-									<option value="0">M</option>
-									<option value="1">L</option>
-									<option value="2">H</option>
-									<option value="3">Q</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-					<div>
-						<p>
-							<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-style">Style</button>
-						</p>
-						<div class="collapse" id="collapse-style">
-							<div class="input-group">
-								<span class="input-group-text">Size</span>
-								<input id="qr_width" type="number" class="form-control" placeholder="Width">
-								<input id="qr_height" type="number" class="form-control" placeholder="height">
-							</div>
-							<div class="input-group">
-								<span class="input-group-text">Background</span>
-								<input id="qr_bg" type="color" class="form-control form-control-color" value="#ffffff">
-							</div>
-							<div class="input-group">
-								<span class="input-group-text">Foreground</span>
-								<input id="qr_fg" type="color" class="form-control form-control-color" value="#000000">
-							</div>
-							<div class="input-group">
-								<span class="input-group-text">Quiet Zone</span>
-								<input id="qr_qtz" type="number" class="form-control" placeholder="Size">
-								<input id="qr_qtz_col" type="color" class="form-control form-control-color" value="#00CED1">
-							</div>
-							<div class="form-check">
-								<input type="checkbox" checked class="form-check-input" id="qr_enable_logo">
-								<label class="form-check-label" for="qr_enable_logo">Enable Logo</label>
-							</div>
-							<div class="form-check">
-								<input type="checkbox" class="form-check-input" id="qr_enable_logo_t">
-								<label class="form-check-label" for="qr_enable_logo_t">Transparent logo Background</label>
-							</div>
-						</div>
-					</div>
-					
-					
-					<div>
-					<label>Data</label>
-						<form>
-							<div class="form-group">
-								<input id="upload-file" type="file" class="form-control-file">
-								<div class="input-group">
-									<div class="input-group-prepend">
-										<label class="input-group-text" for="qr_fileType">Type</label>
-									</div>
-									<select class="custom-select" id="qr_fileType">
-										<option value="0">Text</option>
-										<option value="1">File</option>
-									</select>
-								</div>
-								<div class="input-group">
-									<span class="input-group-text">Name</span>
-									<input id="qr_fileName" type="text" class="form-control" spellcheck="false">
-								</div>
-								<textarea spellcheck="false" id="text-data" class="form-control" rows="5"></textarea>
-								<small id="create-info" class="form-text text-muted">?</small>
-							</div>
-							<div class="form-check">
-								<input type="checkbox" class="form-check-input" id="enable-b64">
-								<label class="form-check-label" for="enable-b64">Base64 Encoding</label>
-							</div>
-						</form>
-					</div>
-						<button id="qr-generate" type="submit" class="btn btn-primary">Generate</button>
-						<button id="qr-download" type="submit" class="btn btn-primary">Downlaod</button>
-					</form>
-				</div>
-				<div id="qr-body"></div>
-            </div>
-        </main>
-        <!-- /.container -->
-        <script src="lib/randomString.js"></script>
-        <script src="lib/FileSaver.min.js"></script>
-        <script src="lib/jszip.min.js"></script>
-        <script src="lib/jquery-3.5.1.slim.min.js"></script>
-        <script src="lib/bootstrap.bundle.min.js"></script>
-		<script src="lib/base64.js"></script>
-		<script src="lib/char-enc-dec.js"></script>
-		<!-- <script src="lib/qrcode.js"></script> -->
-		<script src="lib/easy.qrcode.min.js"></script>
-		<script src="js/jsonData.js"></script>
-		<script src="js/createWindow.js"></script>
-		<script src="js/app.js"></script>
-		<script src="main.js"></script>
+		</div>
+		<div class="new" style="display:none;" id="new">		
+			<p>
+				<span>Encoding</span>
+				<select>
+					<option value="raw">Raw</option>
+					<option value="base64">Base64</option>
+					<option value="hex">Hex</option>
+				</select>
+			</p>
+			<!-- <p> -->
+				<!-- <span></span> -->
+			    <!-- <button type="button">Generate</button> -->
+			<!-- </p> -->
+			<p>
+				<span>ID</span>
+				<input type="text" placeholder="ID"/>
+			</p>
+			<p>
+				<span>Upload (Optional)</span>
+			    <button type="button">Upload</button>
+			</p>
+			<p>
+				<span>Datatype</span>
+				<select>
+					<option value="raw">Text</option>
+					<option value="redirect">Redirect</option>
+					<option value="account">Account</option>
+					<option value="download">Download</option>
+					<option value="file">File</option>
+				</select>	
+			</p>	
+			<p>
+				<span>File Name</span>
+				<input type="text" placeholder="Enter file name..."/>
+			</p>		
+			<p>
+				<span>Packet Size</span>
+				<input type="number" placeholder="Max Length" value="500"/>
+			</p>
+			<textarea spellcheck="false" placeholder="Upload your file / Or write text directly..."></textarea>
+			<p>
+				<span>Label</span>
+				<input type="text" placeholder="label" spellcheck="false" value="#index"/>
+			</p>	
+			<p>
+				<span>Label Size</span>
+				<input type="number" value="30">
+			</p>	
+			<p>
+				<span>Label Color</span>
+				<input type="color" style="padding:0;" value="#000000" height="20"/>
+			</p>
+			<p>
+				<span>Label Shift X</span>
+				<input type="number" value="0">
+			</p>
+			<p>
+				<span>Label Shift Y</span>
+				<input type="number" value="0">
+			</p>	
+			<p>
+				<span>Custom Icon</span>
+				<input type="button" value="Choose"/>
+			</p>
+			<div id="icon-picker"></div>
+			<p>
+				<span>Background</span>
+				<input style="padding:0;" type="color" value="#ffffff">
+			</p>
+			<p>
+				<span>QR Background</span>
+				<input style="padding:0;" type="color" value="#ffffff">
+			</p>	
+			<p>
+				<span>QR Foreground</span>
+				<input style="padding:0;" type="color" value="#000000">
+			</p>
+			<p>
+				<span>Correct Level</span>
+				<select>
+					<option value="H">H</option>
+					<option value="M">M</option>
+					<option value="L">L</option>
+					<option value="Q">Q</option>
+				</select>
+			</p>
+			<p>
+				<span>Image</span>
+				<button>Generate</button>
+			</p>
+			<pre class="text"><code></code></pre>
+			<p style="justify-content: center;">
+				<canvas style="display:none;" height="600" width="500"></canvas>
+			</p>
+			<p>
+				<button style="display:none;">Copy Text</button>
+				<button style="display:none;">Download</button>
+			</p>
+			<pre class="text"><code></code></pre>
+		</div>
 	</body>
-</html>
+	<!-- libs -->
+	<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+	<script type="text/javascript" src="/lib/jquery.min.js"></script>
+	<script type="text/javascript" src="/lib/clipboard.min.js"></script>
+	<script type="text/javascript" src="/lib/crypto-js.min.js"></script>
+	<script type="text/javascript" src="/lib/pako.min.js"></script>
+	<script type="text/javascript" src="/lib/router.js"></script>
+	<script type="text/javascript" src="/lib/FileSaver.min.js"></script>
+	<script type="text/javascript" src="/lib/qrcode.min.js"></script>
+	<script type="text/javascript" src="/lib/jszip.min.js"></script>
+	<!-- scripts -->
+	<script type="text/javascript" src="/js/func.js"></script>
+	<script type="text/javascript" src="/js/make.js"></script>
+	<script type="text/javascript" src="/js/Home.js"></script>
+	<script type="text/javascript" src="/js/Scanner.js"></script>
+	<script type="text/javascript" src="/js/New.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
+</html>							
