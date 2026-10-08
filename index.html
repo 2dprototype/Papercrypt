@@ -1,175 +1,117 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' >
-		<title>Papercrypt</title>
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&family=Ubuntu+Sans+Mono:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="./css/main.css"/>
-		<link rel="stylesheet" href="./lib/highlight/atom-one-dark.css"/>
-		<link rel="stylesheet" href="./lib/patternlock/patternlock.css"/>
-		<script src="./lib/svg-inject.min.js"></script>
-	</head>
-	<body>	
-		<div style="display:none;" id="home">
-			<h3>Papercrypt!</h3>
-			<span>Papercrypt is a tool for generating encrypted QR codes.</span>
-			<br />
-			<br />
-			<b>Quick Start:</b>
-			<br />
-			<span>First, create your qrcode <a href="/new">here</a> using your own configuration.</span>
-			<span>You can <a href="/scanner">scan QR code chunks</a> to reconstruct your data.</span>
-			<br />
-			<br />
-			<span><i>Developed by <a href="https://github.com/2dprototype" target="_blank">2DPrototype</a>!</i></span>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Papercrypt</title>
+	<link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+<header>
+	<h1>Papercrypt</h1>
+	<nav>
+		<a href="#/generate" data-tab="generate">Generate</a>
+		<a href="#/scan" data-tab="scan">Scan &amp; Restore</a>
+	</nav>
+</header>
+
+<main>
+<!-- ============ GENERATE ============ -->
+<section id="tab-generate" hidden>
+	<p class="hint">Turn any file or text into a set of QR codes. Optional compression, password encryption and parity codes (so you can lose a few and still restore).</p>
+
+	<div class="card">
+		<h3>1. Data</h3>
+		<div class="row">
+			<button id="pick-file">Choose file…</button>
+			<span id="file-info" class="muted">or type text below</span>
 		</div>
-		<div id="scanner" style="display:none;">
-            <div class="container">
-                <h3>QR Code Scanner</h3>
-                <p>Scan your QR code chunks to reconstruct the original data</p>
-                <div id="video-container" style="width: 100%; max-width: 400px; margin: 20px auto;">
-                    <video id="scanner-video" style="width: 100%; border: 2px solid #ccc;" muted playsinline></video>
-                </div>
-                <p>
-                    <button id="start-scanner">Start Scanner</button>
-                    <button id="stop-scanner" style="display:none;">Stop Scanner</button>
-                </p>
-                <div id="scan-progress" style="margin: 20px;">
-                    <h4>Scan Progress</h4>
-                    <div id="chunks-list"></div>
-                </div>
-                <div id="reconstructed-data" style="display:none; margin: 20px;">
-                    <h4>Reconstructed Data</h4>
-                    <pre style="background: #f5f5f5; padding: 15px; border-radius: 5px; max-height: 300px; overflow: auto;"></pre>
-                    <p>
-                        <button id="copy-data">Copy Data</button>
-                        <button id="download-data">Download</button>
-                    </p>
-                </div>
-                <div id="manual-input" style="margin: 20px;">
-                    <h4>Manual Input</h4>
-                    <textarea placeholder="Paste QR code content manually..." style="width: 100%; height: 100px; margin: 10px 0;"></textarea>
-                    <button id="add-manual">Add Chunk</button>
-                </div>
-            </div>
+		<textarea id="text-input" spellcheck="false" placeholder="Type or paste text here…"></textarea>
+	</div>
+
+	<div class="card">
+		<h3>2. Options</h3>
+		<div class="grid">
+			<label>Set ID <input id="opt-id" type="text" maxlength="12"></label>
+			<label>Error correction
+				<select id="opt-level"><option value="L">L (7%) – densest</option><option value="M" selected>M (15%)</option><option value="Q">Q (25%)</option><option value="H">H (30%) – sturdiest</option></select>
+			</label>
+			<label>Bytes per QR <input id="opt-bytes" type="number" min="64" value="400"></label>
+			<label>Parity: 1 extra QR per N <input id="opt-parity" type="number" min="0" max="255" value="0"></label>
+			<label>Password (optional) <input id="opt-pass" type="password" autocomplete="new-password" placeholder="AES-256"></label>
+			<label class="chk"><input id="opt-compress" type="checkbox" checked> Compress</label>
 		</div>
-		<div class="new" style="display:none;" id="new">		
-			<p>
-				<span>Encoding</span>
-				<select>
-					<option value="raw">Raw</option>
-					<option value="base64">Base64</option>
-					<option value="hex">Hex</option>
-				</select>
-			</p>
-			<!-- <p> -->
-				<!-- <span></span> -->
-			    <!-- <button type="button">Generate</button> -->
-			<!-- </p> -->
-			<p>
-				<span>ID</span>
-				<input type="text" placeholder="ID"/>
-			</p>
-			<p>
-				<span>Upload (Optional)</span>
-			    <button type="button">Upload</button>
-			</p>
-			<p>
-				<span>Datatype</span>
-				<select>
-					<option value="raw">Text</option>
-					<option value="redirect">Redirect</option>
-					<option value="account">Account</option>
-					<option value="download">Download</option>
-					<option value="file">File</option>
-				</select>	
-			</p>	
-			<p>
-				<span>File Name</span>
-				<input type="text" placeholder="Enter file name..."/>
-			</p>		
-			<p>
-				<span>Packet Size</span>
-				<input type="number" placeholder="Max Length" value="500"/>
-			</p>
-			<textarea spellcheck="false" placeholder="Upload your file / Or write text directly..."></textarea>
-			<p>
-				<span>Label</span>
-				<input type="text" placeholder="label" spellcheck="false" value="#index"/>
-			</p>	
-			<p>
-				<span>Label Size</span>
-				<input type="number" value="30">
-			</p>	
-			<p>
-				<span>Label Color</span>
-				<input type="color" style="padding:0;" value="#000000" height="20"/>
-			</p>
-			<p>
-				<span>Label Shift X</span>
-				<input type="number" value="0">
-			</p>
-			<p>
-				<span>Label Shift Y</span>
-				<input type="number" value="0">
-			</p>	
-			<p>
-				<span>Custom Icon</span>
-				<input type="button" value="Choose"/>
-			</p>
+		<details>
+			<summary>Appearance</summary>
+			<div class="grid">
+				<label>Label <input id="opt-label" type="text" value="#id  #index/#total"></label>
+				<label>Label size <input id="opt-labelsize" type="number" value="28"></label>
+				<label>Label color <input id="opt-labelcolor" type="color" value="#000000"></label>
+				<label>Page background <input id="opt-bg" type="color" value="#ffffff"></label>
+				<label>QR background <input id="opt-qrbg" type="color" value="#ffffff"></label>
+				<label>QR foreground <input id="opt-qrfg" type="color" value="#000000"></label>
+			</div>
+			<div class="muted">Keep strong contrast (dark on light) — scanners need it. Label tokens: <code>#id #index #total</code></div>
 			<div id="icon-picker"></div>
-			<p>
-				<span>Background</span>
-				<input style="padding:0;" type="color" value="#ffffff">
-			</p>
-			<p>
-				<span>QR Background</span>
-				<input style="padding:0;" type="color" value="#ffffff">
-			</p>	
-			<p>
-				<span>QR Foreground</span>
-				<input style="padding:0;" type="color" value="#000000">
-			</p>
-			<p>
-				<span>Correct Level</span>
-				<select>
-					<option value="H">H</option>
-					<option value="M">M</option>
-					<option value="L">L</option>
-					<option value="Q">Q</option>
-				</select>
-			</p>
-			<p>
-				<span>Image</span>
-				<button>Generate</button>
-			</p>
-			<pre class="text"><code></code></pre>
-			<p style="justify-content: center;">
-				<canvas style="display:none;" height="600" width="500"></canvas>
-			</p>
-			<p>
-				<button style="display:none;">Copy Text</button>
-				<button style="display:none;">Download</button>
-			</p>
-			<pre class="text"><code></code></pre>
+		</details>
+		<p><button id="btn-generate" class="primary">Generate QR codes</button></p>
+		<pre id="gen-log" class="log"></pre>
+	</div>
+
+	<div class="card" id="out-card" hidden>
+		<h3>3. Output</h3>
+		<div class="row wrap">
+			<button id="btn-zip">Download ZIP (PNGs)</button>
+			<button id="btn-print">Print sheet</button>
+			<button id="btn-play">▶ Play on screen</button>
 		</div>
-	</body>
-	<!-- libs -->
-	<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-	<script type="text/javascript" src="./lib/jquery.min.js"></script>
-	<script type="text/javascript" src="./lib/clipboard.min.js"></script>
-	<script type="text/javascript" src="./lib/crypto-js.min.js"></script>
-	<script type="text/javascript" src="./lib/pako.min.js"></script>
-	<script type="text/javascript" src="./lib/router.js"></script>
-	<script type="text/javascript" src="./lib/FileSaver.min.js"></script>
-	<script type="text/javascript" src="./lib/qrcode.min.js"></script>
-	<script type="text/javascript" src="./lib/jszip.min.js"></script>
-	<script type="text/javascript" src="./js/func.js"></script>
-	<script type="text/javascript" src="./js/make.js"></script>
-	<script type="text/javascript" src="./js/Home.js"></script>
-	<script type="text/javascript" src="./js/Scanner.js"></script>
-	<script type="text/javascript" src="./js/New.js"></script>
-	<script type="text/javascript" src="./js/main.js"></script>
-</html>							
+		<div id="player" hidden>
+			<canvas id="player-canvas"></canvas>
+			<div class="row wrap center">
+				<button id="pl-prev">◀</button><button id="pl-pause">⏸ Pause</button><button id="pl-next">▶</button>
+				<label>fps <input id="pl-fps" type="number" min="0.5" max="15" step="0.5" value="3" style="width:70px"></label>
+				<span id="pl-count" class="muted"></span>
+			</div>
+			<p class="muted center">Point the scanner at this screen — it loops until every code is captured.</p>
+		</div>
+		<div id="thumbs"></div>
+	</div>
+</section>
+
+<!-- ============ SCAN ============ -->
+<section id="tab-scan" hidden>
+	<p class="hint">Scan the QR codes with your camera, from image files, or paste their text. Order doesn't matter; duplicates are ignored.</p>
+
+	<div class="card">
+		<div class="video-wrap"><video id="video" muted playsinline></video></div>
+		<div class="row wrap center">
+			<button id="btn-start" class="primary">Start camera</button>
+			<button id="btn-stop" hidden>Stop camera</button>
+			<button id="btn-images">Scan image files…</button>
+			<button id="btn-reset">Reset</button>
+		</div>
+		<div id="scan-msg" class="muted center"></div>
+		<details>
+			<summary>Paste chunk text manually</summary>
+			<textarea id="manual" spellcheck="false" placeholder="PC2|abc123|0|12|…"></textarea>
+			<button id="btn-manual">Add chunk</button>
+		</details>
+	</div>
+
+	<div id="sets"></div>
+</section>
+</main>
+
+<!-- libs (all local) -->
+<script src="./lib/pako.min.js"></script>
+<script src="./lib/crypto-js.min.js"></script>
+<script src="./lib/qrcode.min.js"></script>
+<script src="./lib/jszip.min.js"></script>
+<script src="./lib/FileSaver.min.js"></script>
+<script src="./js/codec.js"></script>
+<script src="./js/qr.js"></script>
+<script src="./js/generator.js"></script>
+<script src="./js/scanner.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>
